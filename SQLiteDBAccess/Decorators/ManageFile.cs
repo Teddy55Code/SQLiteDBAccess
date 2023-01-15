@@ -5,7 +5,7 @@ using MethodDecorator.Fody.Interfaces;
 namespace SQLiteDBAccess.Decorators
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor | AttributeTargets.Assembly | AttributeTargets.Module)]
-    public class ManageFileAttribute : Attribute, IMethodDecorator
+    internal class ManageFileAttribute : Attribute, IMethodDecorator
     {
         public bool IsConnectionPreserved = false;
         
