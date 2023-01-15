@@ -151,7 +151,7 @@ namespace SQLiteDBAccess
         [ManageFile]
         public bool CheckForExistingElementByAttribute(string table, string attribute, string value)
         {
-            string command = $"SELECT id FROM {table} WHERE {attribute} like %{value}%";
+            string command = $"SELECT id FROM {table} WHERE {attribute} = {value}";
 
             var getCmd = new SQLiteCommand(command, con);
             var reader = getCmd.ExecuteReader();
