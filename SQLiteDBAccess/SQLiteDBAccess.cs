@@ -11,6 +11,13 @@ namespace SQLiteDBAccess
     {
         private static List<SQLiteDBAccess> _dbAccesses = new List<SQLiteDBAccess>();
 
+        /// <summary>
+        /// Register a new SQLite Database file and instance of SQLiteDBAccess which is added to _dbAccesses.
+        /// </summary>
+        /// <param name="db">The Name of the db file. (Database creates Database.db)</param>
+        /// <param name="path">The Path to the Folder that the Database should be created in.</param>
+        /// <param name="isDBFileManaged">Set if the file should be automatically opened and closed. Exceptions are methods that return SQLiteDataReader they need to be closed manually.</param>
+        /// <returns>an instance of SQLiteDBAccess</returns>
         public static SQLiteDBAccess Instance(string db, string path, bool isDBFileManaged = true)
         {
             SQLiteDBAccess dbAccess;
@@ -51,6 +58,10 @@ namespace SQLiteDBAccess
             using (File.Create(path + $"/{db}.db"));
         }
         
+        /// <summary>
+        /// Creates a new table with given attributes.
+        /// Format: <code>CREATE TABLE IF NOT EXISTS {tableName}({statement})</code>
+        /// </summary>
         [ManageFile]
         public void CreateTable(string tableName, string statement, bool replaceIfExists = true)
         {
@@ -64,13 +75,21 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
         }
         
+        /// <summary>
+        /// Drop a table if it exists.
+        /// Format: <code>DROP TABLE IF EXISTS {tableName}</code>
+        /// </summary>
         [ManageFile]
         public void DropTable(string tableName)
         {
             cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
             cmd.ExecuteNonQuery();
         }
-
+        
+        /// <summary>
+        /// Delete all row from table where attribute is value.
+        /// Format: <code>DELETE FROM {table} WHERE {attribute} = {value}</code>
+        /// </summary>
         [ManageFile]
         public void Delete(string table, string attribute, string value)
         {
@@ -78,6 +97,10 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Insert row into table.
+        /// Format: <code>INSERT INTO {table}({keys}) VALUES({values})</code>
+        /// </summary>
         [ManageFile]
         public void Insert(string table, string keys, string values)
         {
@@ -85,6 +108,10 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Update a single attribute in a row.
+        /// Format <code>UPDATE {table} SET {key} = {value} WHERE {whereAttribute} = {whereValue}</code>
+        /// </summary>
         [ManageFile]
         public void UpdateSingle(string table, string whereAttribute, string whereValue, string key, string value)
         {
@@ -92,6 +119,12 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
          }
 
+        /// <summary>
+        /// Update an entire row.
+        /// columnList is columns formatted as "key = value"
+        /// Format
+        /// <code>UPDATE {table} SET {string.Join(", ", columnList)} WHERE {whereAttribute} = {whereValue}</code>
+        /// </summary>
         [ManageFile]
         public void Update(string table, string whereAttribute, string whereValue, Dictionary<string, string> columns)
         {
@@ -107,6 +140,11 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Get all rows in a table where attribute is value
+        /// Format <code>SELECT * FROM {table} WHERE {attribute} = {value}</code>
+        /// </summary>
+        /// <returns>SQLiteDataReader</returns>
         [ManageFile(IsConnectionPreserved = true)]
         public SQLiteDataReader GetByAttribute(string table, string attribute, string value)
         {
@@ -116,6 +154,11 @@ namespace SQLiteDBAccess
             return getCmd.ExecuteReader();
         }
 
+        /// <summary>
+        /// Get all rows of a table
+        /// Format: <code>SELECT * FROM {table}</code>
+        /// </summary>
+        /// <returns>SQLiteDataReader</returns>
         [ManageFile(IsConnectionPreserved = true)]
         public SQLiteDataReader GetAll(string table)
         {
@@ -125,6 +168,11 @@ namespace SQLiteDBAccess
             return getCmd.ExecuteReader();
         }
 
+        /// <summary>
+        /// Check if a table exists.
+        /// Format: <code>SELECT name FROM sqlite_master WHERE type= 'table' AND name={table}</code>
+        /// </summary>
+        /// <returns>if the table exists</returns>
         [ManageFile]
         public bool CheckForExistingTable(string table)
         {
@@ -135,6 +183,11 @@ namespace SQLiteDBAccess
             return reader.HasRows;
         }
         
+        /// <summary>
+        /// Get the row in a table where attribute is the highest. The main purpose of this method is to get the row with the highest id. (the last added row)
+        /// Format <code>SELECT {attribute} FROM {table} ORDER BY {attribute} DESC LIMIT 1</code>
+        /// </summary>
+        /// <returns>SQLiteDataReader</returns>
         [ManageFile(IsConnectionPreserved = true)]
         public SQLiteDataReader GetLatestByAttribute(string table, string attribute)
         {
@@ -144,6 +197,11 @@ namespace SQLiteDBAccess
             return getCmd.ExecuteReader();
         }
 
+        /// <summary>
+        /// Check if a row where attribute has value exists in a table.
+        /// Format: <code>SELECT id FROM {table} WHERE {attribute} = {value}</code>
+        /// </summary>
+        /// <returns>if row exists</returns>
         [ManageFile]
         public bool CheckForExistingElementByAttribute(string table, string attribute, string value)
         {
@@ -155,6 +213,9 @@ namespace SQLiteDBAccess
             return reader.Read();
         }
 
+        /// <summary>
+        /// Opens and loads the Database file.
+        /// </summary>
         public void OpenDBFile()
         {
             con = new SQLiteConnection(@"URI=file:" + dbFileFolderPath + $"/{dbName}.db");
@@ -162,6 +223,10 @@ namespace SQLiteDBAccess
             cmd = new SQLiteCommand(con);
         }
         
+        /// <summary>
+        /// Closes the Database file.
+        /// </summary>
+        /// <param name="reader">A reader that is due to be closed.</param>
         public void CloseDBFile(SQLiteDataReader reader = null)
         {
             if (reader != null) reader.Dispose();
