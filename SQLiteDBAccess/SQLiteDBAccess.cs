@@ -214,6 +214,27 @@ namespace SQLiteDBAccess
         }
 
         /// <summary>
+        /// Run any SQLite command.
+        /// </summary>
+        [ManageFile]
+        public void CustiomCommand(string command)
+        {
+            cmd.CommandText = command;
+            cmd.ExecuteNonQuery();
+        }
+        
+        /// <summary>
+        /// Run any SQLite command and receive an SQLiteDataReader with the command result.
+        /// </summary>
+        /// <returns></returns>
+        [ManageFile(IsConnectionPreserved = true)]
+        public SQLiteDataReader CustiomCommandWithReturn(string command)
+        {
+            var getCmd = new SQLiteCommand(command, con);
+            return getCmd.ExecuteReader();
+        }
+
+        /// <summary>
         /// Opens and loads the Database file.
         /// </summary>
         public void OpenDBFile()
