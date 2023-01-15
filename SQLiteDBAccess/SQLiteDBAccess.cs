@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -75,7 +74,7 @@ namespace SQLiteDBAccess
         [ManageFile]
         public void Delete(string table, string attribute, string value)
         {
-            cmd.CommandText = $"DELETE FROM {table} WHERE {attribute} = '{value}'";
+            cmd.CommandText = $"DELETE FROM {table} WHERE {attribute} = {value}";
             cmd.ExecuteNonQuery();
         }
 
@@ -111,7 +110,7 @@ namespace SQLiteDBAccess
         [ManageFile(IsConnectionPreserved = true)]
         public SQLiteDataReader GetByAttribute(string table, string attribute, string value)
         {
-            string command = $"SELECT * FROM {table} WHERE {attribute} = '{value}'";
+            string command = $"SELECT * FROM {table} WHERE {attribute} = {value}";
             var getCmd = new SQLiteCommand(command, con);
 
             return getCmd.ExecuteReader();
@@ -129,7 +128,7 @@ namespace SQLiteDBAccess
         [ManageFile]
         public bool CheckForExistingTable(string table)
         {
-            string command = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'";
+            string command = $"SELECT name FROM sqlite_master WHERE type= 'table' AND name={table}";
             var getCmd = new SQLiteCommand(command, con);
             var reader = getCmd.ExecuteReader();
 
@@ -152,7 +151,7 @@ namespace SQLiteDBAccess
         [ManageFile]
         public bool CheckForExistingElementByAttribute(string table, string attribute, string value)
         {
-            string command = $"SELECT id FROM {table} WHERE {attribute} like '%{value}%'";
+            string command = $"SELECT id FROM {table} WHERE {attribute} like %{value}%";
 
             var getCmd = new SQLiteCommand(command, con);
             var reader = getCmd.ExecuteReader();
