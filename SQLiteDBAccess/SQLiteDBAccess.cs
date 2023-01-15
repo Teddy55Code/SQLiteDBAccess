@@ -145,5 +145,18 @@ namespace SQLiteDBAccess
 
             return reader.Read();
         }
+
+        public void OpenDBFile()
+        {
+            con = new SQLiteConnection(@"URI=file:" + dbFileFolderPath + $"\\{dbName}.db");
+            con.Open();
+            cmd = new SQLiteCommand(con);
+        }
+        
+        public void CloseDBFile()
+        {
+            con.Close();
+            con.Dispose();
+        }
     }
 }
