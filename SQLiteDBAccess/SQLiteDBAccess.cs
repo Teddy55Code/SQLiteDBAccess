@@ -1,44 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using SQLiteDBAccess.Decorators;
 
 namespace SQLiteDBAccess
 {
     public class SQLiteDBAccess
     {
-        private static List<SQLiteDBAccess> _dbAccesses = new List<SQLiteDBAccess>();
+        internal static List<SQLiteDBAccess> _dbAccesses = new List<SQLiteDBAccess>();
 
-        public static SQLiteDBAccess Instance(string db, string path)
+        public static SQLiteDBAccess Instance(string db, string path, bool isDBFileManaged = true)
         {
-            var dbAccess = _dbAccesses.FirstOrDefault(dba => dba.dbName.Equals(db) && dba.dbFileFolder.Equals(path));
-            if (dbAccess != null) return dbAccess;
+            var dbAccess = _dbAccesses.FirstOrDefault(dba => dba.dbName.Equals(db) && dba.dbFileFolderPath.Equals(path));
+            if (dbAccess != null)
+            {
+                dbAccess.IsFileManaged = isDBFileManaged;
+                return dbAccess;
+            }
 
-            dbAccess = new SQLiteDBAccess(db, path);
+            dbAccess = new SQLiteDBAccess(db, path, isDBFileManaged);
             _dbAccesses.Add(dbAccess);
             return dbAccess;
         }
 
         private string dbName;
-        private string dbFileFolder;
+        private string dbFileFolderPath;
+        internal bool IsFileManaged;
         private SQLiteConnection con;
         private SQLiteCommand cmd;
 
-        private SQLiteDBAccess(string db, string path)
+        private SQLiteDBAccess(string db, string path, bool isDBFileManaged = true)
         {
             dbName = db;
-            dbFileFolder = path;
-            if (!File.Exists(path + $"\\{db}.db"))
-            {
-                using (File.Create(path + $"\\{db}.db"));
-            }
-            
-            path = @"URI=file:" + path + $"\\{db}.db";
-            con = new SQLiteConnection(path);
-            con.Open();
-            cmd = new SQLiteCommand(con);
+            dbFileFolderPath = path;
+            IsFileManaged = isDBFileManaged;
+            if (File.Exists(path + $"\\{db}.db")) return;
+            using (File.Create(path + $"\\{db}.db"));
         }
-
+        
+        [ManageFile]
         public void CreateTable(string tableName, string statement)
         {
             cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
@@ -48,30 +51,35 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
         }
         
+        [ManageFile]
         public void DropTable(string tableName)
         {
             cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
             cmd.ExecuteNonQuery();
         }
 
+        [ManageFile]
         public void Delete(string table, string attribute, string value)
         {
             cmd.CommandText = $"DELETE FROM {table} WHERE {attribute} = '{value}'";
             cmd.ExecuteNonQuery();
         }
 
+        [ManageFile]
         public void Insert(string table, string keys, string values)
         {
             cmd.CommandText = $"INSERT INTO {table}({keys}) VALUES({values})";
             cmd.ExecuteNonQuery();
         }
 
+        [ManageFile]
         public void UpdateSingle(string table, int id, string key, string value)
         {
             cmd.CommandText = $"UPDATE {table} SET {key} = {value} WHERE id = {id}";
             cmd.ExecuteNonQuery();
         }
 
+        [ManageFile]
         public void Update(string table, int id, Dictionary<string, string> columns)
         {
             List<string> columnList = new List<string>();
@@ -86,6 +94,7 @@ namespace SQLiteDBAccess
             cmd.ExecuteNonQuery();
         }
 
+        [ManageFile(IsConnectionPreserved = true)]
         public SQLiteDataReader GetByAttribute(string table, string attribute, string value)
         {
             string command = $"SELECT * FROM {table} WHERE {attribute} = '{value}'";
@@ -94,6 +103,7 @@ namespace SQLiteDBAccess
             return getCmd.ExecuteReader();
         }
 
+        [ManageFile(IsConnectionPreserved = true)]
         public SQLiteDataReader GetAll(string table)
         {
             string command = $"SELECT * FROM {table}";
@@ -102,6 +112,7 @@ namespace SQLiteDBAccess
             return getCmd.ExecuteReader();
         }
 
+        [ManageFile]
         public bool CheckForExistingTable(string table)
         {
             string command = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'";
@@ -111,6 +122,7 @@ namespace SQLiteDBAccess
             return reader.HasRows;
         }
 
+        [ManageFile]
         public int GetLatestByAttribute(string table, string attribute)
         {
             string command = $"SELECT {attribute} FROM {table} ORDER BY {attribute} DESC LIMIT 1";
@@ -123,6 +135,7 @@ namespace SQLiteDBAccess
             return reader.GetInt32(0);
         }
 
+        [ManageFile]
         public bool CheckForExistingElementByAttribute(string table, string attribute, string value)
         {
             string command = $"SELECT id FROM {table} WHERE {attribute} like '%{value}%'";

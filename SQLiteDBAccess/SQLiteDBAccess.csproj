@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
       <PackageReference Include="Stub.System.Data.SQLite.Core.NetStandard" Version="1.0.117" />
     </ItemGroup>
 
