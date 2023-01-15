@@ -14,7 +14,18 @@ namespace SQLiteDBAccess
 
         public static SQLiteDBAccess Instance(string db, string path, bool isDBFileManaged = true)
         {
-            var dbAccess = _dbAccesses.FirstOrDefault(dba => dba.dbName.Equals(db) && dba.dbFileFolderPath.Equals(path));
+            SQLiteDBAccess dbAccess;
+            if (IsCaseSensitiveFileSystem())
+            {
+                dbAccess = _dbAccesses.FirstOrDefault(dba => dba.dbName.Equals(db) && dba.dbFileFolderPath.Equals(path));
+
+            }
+            else
+            {
+                dbAccess = _dbAccesses.FirstOrDefault(dba => dba.dbName.ToLower().Equals(db.ToLower()) && dba.dbFileFolderPath.ToLower().Equals(path.ToLower()));
+
+            }
+            
             if (dbAccess != null)
             {
                 dbAccess.IsFileManaged = isDBFileManaged;
@@ -166,6 +177,11 @@ namespace SQLiteDBAccess
         {
             con.Close();
             con.Dispose();
+        }
+
+        private static bool IsCaseSensitiveFileSystem() {
+            var tmp = Path.GetTempPath();
+            return !Directory.Exists(tmp.ToUpper()) || !Directory.Exists(tmp.ToLower());
         }
     }
 }
