@@ -10,8 +10,8 @@
         <PackageLicenseUrl>https://licenses.nuget.org/MIT</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Teddy55Code/SQLiteDBAccess</RepositoryUrl>
         <PackageTags>SQL SQLite Database</PackageTags>
-        <PackageReleaseNotes>Hot fixes, minor changes and inline docs.</PackageReleaseNotes>
-        <Version>1.0.2</Version>
+        <PackageReleaseNotes>Hot fix</PackageReleaseNotes>
+        <Version>1.0.3</Version>
     </PropertyGroup>
 
     <ItemGroup>
