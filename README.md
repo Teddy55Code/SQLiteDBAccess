@@ -11,7 +11,8 @@ If that is to expensive for you you can pass `false` and open/close the file man
 
 ### **Attention**
 **If a method in SQLiteDBAccess is used that returns an SQLDataReader the connection will not be closed even if file management is enabled. 
-Meaning you will have to manually free the file with `CloseDBFile()`.
+Meaning you will have to manually free the file with `CloseDBFile(yourReader)`. 
+`yourReader` being the SQLiteDataReader that you have used.
 This is necessary because the connection needs to be active to use the reader.**
 
 ## examples:
@@ -40,11 +41,12 @@ Note:
 You will need to add '' around items which contain spaces e.g. `'hello world'`.
 ### Read Single Row From Table By Attribute
 ````csharp
-var result = dbAccess.GetByAttribute("MyTable", "Id", "1");
-if (result.Read())
+var reader = dbAccess.GetByAttribute("MyTable", "Id", "1");
+if (reader.Read())
 {
-    Console.WriteLine($"{result.GetName(0)}: {result.GetInt64(0)}\n{result.GetName(1)}: {result.GetString(1)}\n{result.GetName(2)}: {result.GetInt64(2)}");
+    Console.WriteLine($"{reader.GetName(0)}: {reader.GetInt64(0)}\n{reader.GetName(1)}: {reader.GetString(1)}\n{reader.GetName(2)}: {reader.GetInt64(2)}");
 } 
+dbAccess.CloseDBFile(reader);
 ````
 
 Note: 
@@ -53,11 +55,12 @@ Any one of those factors will result in a single row being returned.
 
 ### Read All Rows From Table
 ````csharp
-var result = dbAccess.GetAll("MyTable");
-while (result.Read())
+var reader = dbAccess.GetAll("MyTable");
+while (reader.Read())
 {
-    Console.WriteLine($"{result.GetName(0)}: {result.GetInt64(0)}\n{result.GetName(1)}: {result.GetString(1)}\n{result.GetName(2)}: {result.GetInt64(2)}");
+    Console.WriteLine($"{reader.GetName(0)}: {reader.GetInt64(0)}\n{reader.GetName(1)}: {reader.GetString(1)}\n{reader.GetName(2)}: {reader.GetInt64(2)}");
 } 
+dbAccess.CloseDBFile(reader);
 ````
 
 Note:
