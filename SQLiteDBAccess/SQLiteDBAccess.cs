@@ -48,8 +48,8 @@ namespace SQLiteDBAccess
             dbName = db;
             dbFileFolderPath = path;
             IsFileManaged = isDBFileManaged;
-            if (File.Exists(path + $"\\{db}.db")) return;
-            using (File.Create(path + $"\\{db}.db"));
+            if (File.Exists(path + $"/{db}.db")) return;
+            using (File.Create(path + $"/{db}.db"));
         }
         
         [ManageFile]
@@ -162,7 +162,7 @@ namespace SQLiteDBAccess
 
         public void OpenDBFile()
         {
-            con = new SQLiteConnection(@"URI=file:" + dbFileFolderPath + $"\\{dbName}.db");
+            con = new SQLiteConnection(@"URI=file:" + dbFileFolderPath + $"/{dbName}.db");
             con.Open();
             cmd = new SQLiteCommand(con);
         }
