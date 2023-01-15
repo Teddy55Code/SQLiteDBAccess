@@ -7,7 +7,7 @@ using SQLiteDBAccess.Decorators;
 
 namespace SQLiteDBAccess
 {
-    public class SQLiteDBAccess
+    public class SQLiteDBAccess : IDisposable
     {
         private static List<SQLiteDBAccess> _dbAccesses = new List<SQLiteDBAccess>();
 
@@ -57,7 +57,7 @@ namespace SQLiteDBAccess
             if (File.Exists(path + $"/{db}.db")) return;
             using (File.Create(path + $"/{db}.db"));
         }
-        
+
         /// <summary>
         /// Creates a new table with given attributes.
         /// Format: <code>CREATE TABLE IF NOT EXISTS {tableName}({statement})</code>
@@ -236,12 +236,28 @@ namespace SQLiteDBAccess
 
         ~SQLiteDBAccess()
         {
-            con.Dispose();
+            Dispose(false);
         }
 
         private static bool IsCaseSensitiveFileSystem() {
             var tmp = Path.GetTempPath();
             return !Directory.Exists(tmp.ToUpper()) || !Directory.Exists(tmp.ToLower());
+        }
+
+        private void ReleaseUnmanagedResources() { }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+            cmd?.Dispose();
+            con?.Dispose();
+            _dbAccesses.Remove(this);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
