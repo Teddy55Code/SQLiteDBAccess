@@ -86,14 +86,14 @@ namespace SQLiteDBAccess
         }
 
         [ManageFile]
-        public void UpdateSingle(string table, int id, string key, string value)
+        public void UpdateSingle(string table, string whereAttribute, string whereValue, string key, string value)
         {
-            cmd.CommandText = $"UPDATE {table} SET {key} = {value} WHERE id = {id}";
+            cmd.CommandText = $"UPDATE {table} SET {key} = {value} WHERE {whereAttribute} = {whereValue}";
             cmd.ExecuteNonQuery();
         }
 
         [ManageFile]
-        public void Update(string table, int id, Dictionary<string, string> columns)
+        public void Update(string table, string whereAttribute, string whereValue, Dictionary<string, string> columns)
         {
             List<string> columnList = new List<string>();
 
@@ -103,7 +103,7 @@ namespace SQLiteDBAccess
                 columnList.Add($"{pair.Key} = {pair.Value}");
             }
 
-            cmd.CommandText = $"UPDATE {table} SET {string.Join(", ", columnList)} WHERE id = {id}";
+            cmd.CommandText = $"UPDATE {table} SET {string.Join(", ", columnList)} WHERE {whereAttribute} = {whereValue}";
             cmd.ExecuteNonQuery();
         }
 
