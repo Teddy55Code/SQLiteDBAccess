@@ -166,15 +166,14 @@ namespace SQLiteDBAccess
             cmd = new SQLiteCommand(con);
         }
         
-        public void CloseDBFile()
+        public void CloseDBFile(SQLiteDataReader reader = null)
         {
-            con.Close();
+            if (reader != null) reader.Dispose();
             con.Dispose();
         }
 
         ~SQLiteDBAccess()
         {
-            con.Close();
             con.Dispose();
         }
 
