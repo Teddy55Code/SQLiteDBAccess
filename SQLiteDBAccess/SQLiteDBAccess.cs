@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -90,7 +91,7 @@ namespace SQLiteDBAccess
         {
             cmd.CommandText = $"UPDATE {table} SET {key} = {value} WHERE {whereAttribute} = {whereValue}";
             cmd.ExecuteNonQuery();
-        }
+         }
 
         [ManageFile]
         public void Update(string table, string whereAttribute, string whereValue, Dictionary<string, string> columns)
@@ -170,6 +171,7 @@ namespace SQLiteDBAccess
         {
             if (reader != null) reader.Dispose();
             con.Dispose();
+            GC.Collect();
         }
 
         ~SQLiteDBAccess()
