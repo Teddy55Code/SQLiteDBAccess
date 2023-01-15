@@ -199,13 +199,13 @@ namespace SQLiteDBAccess
 
         /// <summary>
         /// Check if a row where attribute has value exists in a table.
-        /// Format: <code>SELECT id FROM {table} WHERE {attribute} = {value}</code>
+        /// Format: <code>SELECT * FROM {table} WHERE {attribute} = {value}</code>
         /// </summary>
         /// <returns>if row exists</returns>
         [ManageFile]
         public bool CheckForExistingElementByAttribute(string table, string attribute, string value)
         {
-            string command = $"SELECT id FROM {table} WHERE {attribute} = {value}";
+            string command = $"SELECT * FROM {table} WHERE {attribute} = {value}";
 
             var getCmd = new SQLiteCommand(command, con);
             var reader = getCmd.ExecuteReader();
