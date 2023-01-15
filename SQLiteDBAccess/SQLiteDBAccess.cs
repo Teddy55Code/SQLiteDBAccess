@@ -42,12 +42,15 @@ namespace SQLiteDBAccess
         }
         
         [ManageFile]
-        public void CreateTable(string tableName, string statement)
+        public void CreateTable(string tableName, string statement, bool replaceIfExists = true)
         {
-            cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
-            cmd.ExecuteNonQuery();
+            if (replaceIfExists)
+            {
+                cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
+                cmd.ExecuteNonQuery();
+            }
 
-            cmd.CommandText = $"CREATE TABLE {tableName}({statement})";
+            cmd.CommandText = $"CREATE TABLE IF NOT EXISTS {tableName}({statement})";
             cmd.ExecuteNonQuery();
         }
         
