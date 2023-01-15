@@ -210,7 +210,7 @@ namespace SQLiteDBAccess
             var getCmd = new SQLiteCommand(command, con);
             var reader = getCmd.ExecuteReader();
 
-            return reader.Read();
+            return reader == null || reader.Read();
         }
 
         /// <summary>
