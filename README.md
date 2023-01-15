@@ -5,14 +5,15 @@ It allows you to easily create and access multiple different sqlite db files.
 
 simply add/create a database via `SQLiteDBAccess.Instance()` This will check if there already is an instance for that file and ether create the file and return a new instance or get the already existing instance. 
 
-You can also pass a bool as 3rd attribute (default `true`) it determines if the file should be managed automatically or manually. If set to `true` the file will be opened and closed on every call. If that is to expensive for you you can pass `false` and open/close the file manually via `OpenDBFile()` and `CloseDBFile()`.
+You can also pass a bool as 3rd attribute (default `true`) it determines if the file should be managed automatically or manually. 
+If set to `true` the file will be opened and closed on every call. 
+If that is to expensive for you you can pass `false` and open/close the file manually via `OpenDBFile()` and `CloseDBFile()`.
 
-#### **Attention**
-```diff
-! If a method in SQLiteDBAccess is used that returns an SQLDataReader the connection will not be closed even if file management is enabled. 
-! Meaning you will have to manully free the file with "CloseDBFile()".
-! This is necessary because the connection needs to be active to use the reader.
-```
+### **Attention**
+**If a method in SQLiteDBAccess is used that returns an SQLDataReader the connection will not be closed even if file management is enabled. 
+Meaning you will have to manually free the file with `CloseDBFile()`.
+This is necessary because the connection needs to be active to use the reader.**
+
 ## examples:
 
 ### Create/Add Database
@@ -47,7 +48,8 @@ if (result.Read())
 ````
 
 Note: 
-GetByAttribute() can return multiple rows. In this example a primary key is used and result.Read() is only executed once. Any one of those factors will result in a single row being returned. 
+GetByAttribute() can return multiple rows. In this example a primary key is used and result.Read() is only executed once. 
+Any one of those factors will result in a single row being returned. 
 
 ### Read All Rows From Table
 ````csharp
