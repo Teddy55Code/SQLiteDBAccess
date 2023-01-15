@@ -161,5 +161,11 @@ namespace SQLiteDBAccess
             con.Close();
             con.Dispose();
         }
+
+        ~SQLiteDBAccess()
+        {
+            con.Close();
+            con.Dispose();
+        }
     }
 }
