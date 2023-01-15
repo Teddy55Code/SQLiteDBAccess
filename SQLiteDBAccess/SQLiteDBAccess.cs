@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using SQLiteDBAccess.Decorators;
 
 namespace SQLiteDBAccess
 {
     public class SQLiteDBAccess
     {
-        internal static List<SQLiteDBAccess> _dbAccesses = new List<SQLiteDBAccess>();
+        private static List<SQLiteDBAccess> _dbAccesses = new List<SQLiteDBAccess>();
 
         public static SQLiteDBAccess Instance(string db, string path, bool isDBFileManaged = true)
         {
@@ -135,18 +134,14 @@ namespace SQLiteDBAccess
 
             return reader.HasRows;
         }
-
-        [ManageFile]
-        public int GetLatestByAttribute(string table, string attribute)
+        
+        [ManageFile(IsConnectionPreserved = true)]
+        public SQLiteDataReader GetLatestByAttribute(string table, string attribute)
         {
             string command = $"SELECT {attribute} FROM {table} ORDER BY {attribute} DESC LIMIT 1";
-
             var getCmd = new SQLiteCommand(command, con);
-            var reader = getCmd.ExecuteReader();
-
-            reader.Read();
-
-            return reader.GetInt32(0);
+            
+            return getCmd.ExecuteReader();
         }
 
         [ManageFile]
