@@ -55,7 +55,7 @@ namespace SQLiteDBAccess
             dbFileFolderPath = path;
             IsFileManaged = isDBFileManaged;
             if (File.Exists(path + $"/{db}.db")) return;
-            using (File.Create(path + $"/{db}.db"));
+            using (File.Create(path + $"/{db}.db")) { }
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace SQLiteDBAccess
         /// Run any SQLite command.
         /// </summary>
         [ManageFile]
-        public void CustiomCommand(string command)
+        public void CustomCommand(string command)
         {
             cmd.CommandText = command;
             cmd.ExecuteNonQuery();
@@ -228,7 +228,7 @@ namespace SQLiteDBAccess
         /// </summary>
         /// <returns></returns>
         [ManageFile(IsConnectionPreserved = true)]
-        public SQLiteDataReader CustiomCommandWithReturn(string command)
+        public SQLiteDataReader CustomCommandWithReturn(string command)
         {
             var getCmd = new SQLiteCommand(command, con);
             return getCmd.ExecuteReader();

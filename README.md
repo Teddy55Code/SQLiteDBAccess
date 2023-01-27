@@ -15,7 +15,7 @@ Meaning you will have to manually free the file with `CloseDBFile(yourReader)`.
 `yourReader` being the SQLiteDataReader that you have used.
 This is necessary because the connection needs to be active to use the reader.**
 
-You can also run any sqlite command via `CustiomCommand` or `CustiomCommandWithReturn` if you want to return value(s).
+You can also run any sqlite command via `CustomCommand` or `CustomCommandWithReturn` if you want to return value(s).
 
 ## examples:
 
