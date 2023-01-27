@@ -10,8 +10,9 @@
         <PackageLicenseUrl>https://licenses.nuget.org/MIT</PackageLicenseUrl>
         <RepositoryUrl>https://github.com/Teddy55Code/SQLiteDBAccess</RepositoryUrl>
         <PackageTags>SQL SQLite Database</PackageTags>
-        <PackageReleaseNotes>Add support for custom commands.</PackageReleaseNotes>
-        <Version>1.0.5</Version>
+        <PackageReleaseNotes>refactoring and typo fixes</PackageReleaseNotes>
+        <Version>1.0.6</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
